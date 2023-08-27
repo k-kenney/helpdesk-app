@@ -4,36 +4,39 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 
 export default function CreateForm() {
-    const router = useRouter()
+  const router = useRouter()
 
   const [title, setTitle] = useState('')
   const [body, setBody] = useState('')
   const [priority, setPriority] = useState('low')
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e)  => {
     e.preventDefault()
     setIsLoading(true)
 
-    const ticket = {
-        title, body, priority, user_email: 'mario@netninja.dev'
-    }
+    const newTicket = { title, body, priority, user_email: 'mario@netninja.dev' }
 
-    const res = await fetch('http://localhost:4000/tickets', {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(ticket)
+    const res = await fetch('http://localhost:3000/api/tickets', {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(newTicket)
     })
 
-    if (res.status === 201) {
-        router.refresh
-        router.push('/tickets')
+    const json = await res.json()
+
+    if (json.error) {
+      console.log(error.message)
+    }
+    if (json.data) {
+      router.refresh()
+      router.push('/tickets')
     }
   }
 
-    return (
-       <form onSubmit={handleSubmit} className="w-1/2">
-         <label>
+  return (
+    <form onSubmit={handleSubmit} className="w-1/2">
+      <label>
         <span>Title:</span>
         <input
           required 
@@ -43,7 +46,7 @@ export default function CreateForm() {
         />
       </label>
       <label>
-        <span>Body:</span>
+        <span>Title:</span>
         <textarea
           required
           onChange={(e) => setBody(e.target.value)}
@@ -68,8 +71,6 @@ export default function CreateForm() {
       {isLoading && <span>Adding...</span>}
       {!isLoading && <span>Add Ticket</span>}
     </button>
-       </form>
-    )
+    </form>
+  )
 }
-
-
