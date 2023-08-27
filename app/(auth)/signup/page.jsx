@@ -28,7 +28,7 @@ export default function Signup() {
     }
 
     if (!error) {
-      router.push('verift')
+      router.push('verify')
     }
   }
     return (
